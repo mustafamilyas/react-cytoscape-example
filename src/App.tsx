@@ -1,29 +1,17 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import "./App.css";
 import cytoscape from "cytoscape";
+import { generateData } from "./utils/generate-data";
 
 export default function App() {
+  const data = useMemo(() => generateData(200), []);
+
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!ref.current) return;
     let cy = cytoscape({
       container: ref.current, // container to render in
-      elements: [
-        // list of graph elements to start with
-        {
-          // node a
-          data: { id: "a" },
-        },
-        {
-          // node b
-          data: { id: "b" },
-        },
-        {
-          // edge ab
-          data: { id: "ab", source: "a", target: "b" },
-        },
-      ],
-
+      elements: data,
       style: [
         // the stylesheet for the graph
         {
@@ -47,8 +35,8 @@ export default function App() {
       ],
 
       layout: {
-        name: "grid",
-        rows: 1,
+        name: "cose",
+        animate: false,
       },
     });
     return () => {
