@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useRef } from "react";
+import "./App.css";
+import cytoscape from "cytoscape";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    let cy = cytoscape({
+      container: ref.current, // container to render in
+      elements: [
+        // list of graph elements to start with
+        {
+          // node a
+          data: { id: "a" },
+        },
+        {
+          // node b
+          data: { id: "b" },
+        },
+        {
+          // edge ab
+          data: { id: "ab", source: "a", target: "b" },
+        },
+      ],
+
+      style: [
+        // the stylesheet for the graph
+        {
+          selector: "node",
+          style: {
+            "background-color": "#666",
+            label: "data(id)",
+          },
+        },
+
+        {
+          selector: "edge",
+          style: {
+            width: 3,
+            "line-color": "#ccc",
+            "target-arrow-color": "#ccc",
+            "target-arrow-shape": "triangle",
+            "curve-style": "bezier",
+          },
+        },
+      ],
+
+      layout: {
+        name: "grid",
+        rows: 1,
+      },
+    });
+    return () => {
+      cy.destroy();
+    };
+  }, []);
+  return <div className="app" ref={ref}></div>;
 }
-
-export default App;
