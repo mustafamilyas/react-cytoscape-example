@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef } from "react";
 import "./App.css";
 import cytoscape from "cytoscape";
-import { generateData } from "./utils/generate-data";
+import { generateDataWithSentiment } from "./utils/generate-data";
 import d3Force from "cytoscape-d3-force";
 
 cytoscape.use(d3Force);
 
 export default function App() {
-  const data = useMemo(() => generateData(200), []);
+  const data = useMemo(() => generateDataWithSentiment(200), []);
 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -52,14 +52,12 @@ export default function App() {
         manyBodyStrength: -300,
         ready: function () {},
         stop: function () {},
-        tick: function (progress) {
-          console.log("progress - ", progress);
-        },
         xX: (el) => {
+          console.log("🚀 ~ file: App.tsx:59 ~ useEffect ~ el:", el);
           if (!el?.sentiment) return 0;
 
-          if (el.sentiment === "positive") return 100;
-          if (el.sentiment === "negative") return -100;
+          if (el.sentiment === "positive") return 500;
+          if (el.sentiment === "negative") return -500;
           return 0;
         },
         randomize: true,
