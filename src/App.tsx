@@ -2,6 +2,9 @@ import { useEffect, useMemo, useRef } from "react";
 import "./App.css";
 import cytoscape from "cytoscape";
 import { generateData } from "./utils/generate-data";
+import d3Force from "cytoscape-d3-force";
+
+cytoscape.use(d3Force);
 
 export default function App() {
   const data = useMemo(() => generateData(200), []);
@@ -17,7 +20,12 @@ export default function App() {
         {
           selector: "node",
           style: {
-            "background-color": "#666",
+            "background-color": (ele) => {
+              const sentiment = ele.data("sentiment");
+              if (sentiment === "positive") return "green";
+              if (sentiment === "negative") return "red";
+              return "blue";
+            },
             label: "data(id)",
           },
         },
@@ -35,9 +43,28 @@ export default function App() {
       ],
 
       layout: {
-        name: "cose",
-        animate: false,
-      },
+        name: "d3-force",
+        animate: true,
+        linkId: function id(d) {
+          return d.id;
+        },
+        linkDistance: 80,
+        manyBodyStrength: -300,
+        ready: function () {},
+        stop: function () {},
+        tick: function (progress) {
+          console.log("progress - ", progress);
+        },
+        xX: (el) => {
+          if (!el?.sentiment) return 0;
+
+          if (el.sentiment === "positive") return 100;
+          if (el.sentiment === "negative") return -100;
+          return 0;
+        },
+        randomize: true,
+        infinite: true,
+      } as any,
     });
     return () => {
       cy.destroy();
