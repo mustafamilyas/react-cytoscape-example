@@ -43,6 +43,7 @@
     ]
   },
   "devDependencies": {
-    "@types/cytoscape": "^3.19.16"
+    "@types/cytoscape": "^3.19.16",
+    "@types/cytoscape-d3-force": "^1.0.0"
   }
 }

@@ -1,5 +1,5 @@
 import { EdgeDefinition, ElementsDefinition, NodeDefinition } from "cytoscape";
-import { SentimentValues } from "../types";
+import { SentimentValues } from "../interfaces";
 
 export function generateData(n: number): ElementsDefinition {
   const nodes: NodeDefinition[] = [];

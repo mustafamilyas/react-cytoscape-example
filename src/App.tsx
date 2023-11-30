@@ -3,6 +3,7 @@ import "./App.css";
 import cytoscape from "cytoscape";
 import { generateDataWithSentiment } from "./utils/generate-data";
 import d3Force from "cytoscape-d3-force";
+import cytoscapeD3Force from "cytoscape-d3-force";
 
 cytoscape.use(d3Force);
 
@@ -41,32 +42,24 @@ export default function App() {
           },
         },
       ],
-
-      layout: {
-        name: "d3-force",
-        animate: true,
-        linkId: function id(d) {
-          return d.id;
-        },
-        linkDistance: 80,
-        manyBodyStrength: -300,
-        ready: function () {},
-        stop: function () {},
-        xX: (el) => {
-          console.log("🚀 ~ file: App.tsx:59 ~ useEffect ~ el:", el);
-          if (!el?.sentiment) return 0;
-
-          if (el.sentiment === "positive") return 500;
-          if (el.sentiment === "negative") return -500;
-          return 0;
-        },
-        randomize: true,
-        infinite: true,
-      } as any,
     });
-    return () => {
-      cy.destroy();
+    const layoutOptions: cytoscapeD3Force.D3ForceLayoutOptions = {
+      name: "d3-force",
+      animate: true,
+      linkId: function id(d) {
+        return d.id;
+      },
+      linkDistance: 80,
+      manyBodyStrength: -300,
+      xX: (el) => {
+        if (!el?.sentiment) return 0;
+
+        if (el.sentiment === "positive") return 500;
+        if (el.sentiment === "negative") return -500;
+        return 0;
+      },
     };
+    cy.layout(layoutOptions).run();
   }, []);
   return <div className="app" ref={ref}></div>;
 }
